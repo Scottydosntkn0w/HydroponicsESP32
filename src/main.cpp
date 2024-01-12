@@ -60,6 +60,8 @@
 String Val = "";
 String MqttPath = "Hydroponics_1/test1/";
 
+String MqttPath = "Hydroponics_1/test1/";
+
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*------------------------------------ Configuration --------------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -172,6 +174,11 @@ void setup() {
   g_UniqueId =  String(mac[0],HEX) +String(mac[1],HEX) +String(mac[2],HEX) +String(mac[3],HEX) + String(mac[4],HEX) + String(mac[5],HEX);
   Serial.println("INIT SYSTEM...");
   Serial.println(g_UniqueId);
+  byte mac[6];
+  WiFi.macAddress(mac);
+  g_UniqueId =  String(mac[0],HEX) +String(mac[1],HEX) +String(mac[2],HEX) +String(mac[3],HEX) + String(mac[4],HEX) + String(mac[5],HEX);
+  Serial.println("INIT SYSTEM...");
+  Serial.println(g_UniqueId);
 
   
 
@@ -184,6 +191,9 @@ void setup() {
 void onConnectionEstablished()
 {
 
+
+  
+  //MqttHomeAssistantDiscovery();     // Send Discovery Data
 
   
   //MqttHomeAssistantDiscovery();     // Send Discovery Data
@@ -226,8 +236,9 @@ void loop() {
     Val.trim();
     
     String topic = MqttPath + Name;
+    String topic = MqttPath + Name;
 
-    //client.publish(topic, Val); // You can activate the retain flag by setting the third parameter to true
+    client.publish(topic, Val); // You can activate the retain flag by setting the third parameter to true
     
     c=0;
     dataIn="";
