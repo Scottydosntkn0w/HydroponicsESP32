@@ -98,7 +98,7 @@ void setup() {
   client.enableDebuggingMessages(); // Enable debugging messages sent to serial output
   client.enableHTTPWebUpdater(); // Enable the web updater. User and password default to values of MQTTUsername and MQTTPassword. These can be overridded with enableHTTPWebUpdater("user", "password").
   client.enableOTA(); // Enable OTA (Over The Air) updates. Password defaults to MQTTPassword. Port is the default OTA port. Can be overridden with enableOTA("password", port).
-  client.enableLastWillMessage("TestClient/lastwill", "I am going offline");  // You can activate the retain flag by setting the third parameter to true
+  client.enableLastWillMessage("TestClient/lastwill", "offline");  // You can activate the retain flag by setting the third parameter to true
 
   byte mac[6];
   WiFi.macAddress(mac);
@@ -129,7 +129,7 @@ void onConnectionEstablished()
   client.subscribe(MqttPath + "output/pump3/command", [](const String& payload) {Serial.println("pump3CMD: " + payload);Serial1.println("pump3CMD: " + payload);});
   client.subscribe(MqttPath + "output/pump4/command", [](const String& payload) {Serial.println("pump4CMD: " + payload);Serial1.println("pump4CMD: " + payload);});
   client.subscribe(MqttPath + "state/Mode", [](const String& payload) {Serial.println("Mode: " + payload);Serial1.println("Mode: " + payload);});  
-
+  client.publish("TestClient/lastwill", "online");
 }
 
 
