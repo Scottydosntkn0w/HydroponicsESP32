@@ -66,13 +66,24 @@ String MqttPath = "Hydroponics_1/test1/";
 /*------------------------------------ Configuration --------------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 
+//Benson Hill Wifi 
+//EspMQTTClient client(
+//   "BH-Wireless",
+//   "Founded2012!",
+//   "10.1.175.101",  // MQTT Broker server ip
+//   "iot_admin",   // Can be omitted if not needed
+//   "controlsadmin",   // Can be omitted if not needed
+//   "ESP32TestClient",     // Client name that uniquely identify your device
+//   1883              // The MQTT port, default to 1883. this line can be omitted
+// );
+
 EspMQTTClient client(
-  "BH-Wireless",
-  "Founded2012!",
-  "10.1.175.101",  // MQTT Broker server ip
-  "iot_admin",   // Can be omitted if not needed
-  "controlsadmin",   // Can be omitted if not needed
-  "ESP32TestClient",     // Client name that uniquely identify your device
+  "ScottyDosntKnow2.4",
+  "Hendricks1568",
+  "192.168.50.210",  // MQTT Broker server ip
+  "scott_home",   // Can be omitted if not needed
+  "password",   // Can be omitted if not needed
+  "ESP32Hydro",     // Client name that uniquely identify your device
   1883              // The MQTT port, default to 1883. this line can be omitted
 );
 
@@ -82,6 +93,8 @@ const char* g_swVersion = "1.1";
 const char* g_manufacturer = "HiLetGo";
 String g_deviceName = "Hydroponics";
 String g_mqttStatusTopic = "esp32iotsenosr/" + g_deviceName;
+
+
 
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*------------------------------------Public variables-------------------------------------------------------------------------------------------*/
