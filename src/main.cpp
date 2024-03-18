@@ -60,8 +60,6 @@
 String Val = "";
 String MqttPath = "Hydroponics_1/test1/";
 
-String MqttPath = "Hydroponics_1/test1/";
-
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*------------------------------------ Configuration --------------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -102,11 +100,11 @@ String g_mqttStatusTopic = "esp32iotsenosr/" + g_deviceName;
 
 
 //Variables used for MQTT Discory on Home Assistant
-const char* g_deviceModel = "ESP32Device";
-const char* g_swVersion = "1.1";
-const char* g_manufacturer = "HiLetGo";
-String g_deviceName = "Hydroponics";
-String g_mqttStatusTopic = "esp32iotsenosr/" + g_deviceName;
+// const char* g_deviceModel = "ESP32Device";
+// const char* g_swVersion = "1.1";
+// const char* g_manufacturer = "HiLetGo";
+// String g_deviceName = "Hydroponics";
+// String g_mqttStatusTopic = "esp32iotsenosr/" + g_deviceName;
 
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*------------------------------------Public variables-------------------------------------------------------------------------------------------*/
@@ -128,15 +126,6 @@ bool                g_SendMqttData = false;
 
 void MqttHomeAssistantDiscovery();
 
-/*-----------------------------------------------------------------------------------------------------------------------------------------------*/
-/*------------------------------------ SETUP ----------------------------------------------------------------------------------------------------*/
-/*-----------------------------------------------------------------------------------------------------------------------------------------------*/
-unsigned long       g_Time = 0;
-int                 g_count = 0; 
-int                 g_mqttCounterConn = 0;
-bool                g_InitSystem = true;
-String              g_UniqueId;
-bool                g_SendMqttData = false;
 
 /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 /*------------------------------------ prototypes for references---------------------------------------------------------------------------------*/
@@ -187,11 +176,7 @@ void setup() {
   g_UniqueId =  String(mac[0],HEX) +String(mac[1],HEX) +String(mac[2],HEX) +String(mac[3],HEX) + String(mac[4],HEX) + String(mac[5],HEX);
   Serial.println("INIT SYSTEM...");
   Serial.println(g_UniqueId);
-  byte mac[6];
-  WiFi.macAddress(mac);
-  g_UniqueId =  String(mac[0],HEX) +String(mac[1],HEX) +String(mac[2],HEX) +String(mac[3],HEX) + String(mac[4],HEX) + String(mac[5],HEX);
-  Serial.println("INIT SYSTEM...");
-  Serial.println(g_UniqueId);
+
 
   
 
@@ -218,6 +203,7 @@ void onConnectionEstablished()
   client.subscribe(MqttPath + "output/pump2/command", [](const String& payload) {Serial.println("pump2CMD: " + payload);Serial1.println("pump2CMD: " + payload);});
   client.subscribe(MqttPath + "output/pump3/command", [](const String& payload) {Serial.println("pump3CMD: " + payload);Serial1.println("pump3CMD: " + payload);});
   client.subscribe(MqttPath + "output/pump4/command", [](const String& payload) {Serial.println("pump4CMD: " + payload);Serial1.println("pump4CMD: " + payload);});
+   client.subscribe(MqttPath + "output/EC_enable/command", [](const String& payload) {Serial.println("EC_enableCMD: " + payload);Serial1.println("EC_enableCMD: " + payload);});
   client.subscribe(MqttPath + "state/Mode", [](const String& payload) {Serial.println("Mode: " + payload);Serial1.println("Mode: " + payload);});  
   client.publish("TestClient/lastwill", "online");
 }
@@ -249,7 +235,7 @@ void loop() {
     Val.trim();
     
     String topic = MqttPath + Name;
-    String topic = MqttPath + Name;
+  
 
     client.publish(topic, Val); // You can activate the retain flag by setting the third parameter to true
     
@@ -262,105 +248,6 @@ void loop() {
 }
 
 void MqttHomeAssistantDiscovery()
-{
-    String discoveryTopic;
-    String payload;
-    String strPayload;
-    if(true)
-    {
-        Serial.println("SEND HOME ASSISTANT DISCOVERY!!!");
-        JsonDocument payload;
-        char buffer[256];
-        JsonObject device;
-        JsonArray identifiers;
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //PH
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        discoveryTopic = "homeassistant/sensor/" + g_deviceName + "_PH" + "/config";
-        
-        //payload["name"] = g_deviceName + ".PH";
-        payload["device_class"] = "pH";
-        payload["state_topic"] = g_mqttStatusTopic;
-        payload["unit_of_measurement"] = "pH";
-        payload["value_template"] = "{{ value_json.pH}}";
-        payload["unique_id"] = g_UniqueId + "_PH";
-        
-        //device = payload.createNestedObject("device");
-        //device["name"] = g_deviceName;
-        //device["model"] = g_deviceModel;
-        // device["sw_version"] = g_swVersion;
-        // device["manufacturer"] = g_manufacturer;
-        //identifiers = device.createNestedArray("identifiers");
-        // identifiers.add(g_UniqueId);
-        size_t n = serializeJson(payload, buffer);
-        serializeJsonPretty(payload, Serial);
-        Serial.println(" ");
-
-        client.publish(discoveryTopic.c_str(), buffer, n);
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Humidity
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // payload.clear();
-        // device.clear();
-        // identifiers.clear();
-        // strPayload.clear();
-
-        // discoveryTopic = "homeassistant/sensor/esp32iotsensor/" + g_deviceName + "_hum" + "/config";
-        
-        // payload["name"] = g_deviceName + ".hum";
-        // payload["uniq_id"] = g_UniqueId + "_hum";
-        // payload["stat_t"] = g_mqttStatusTopic;
-        // payload["dev_cla"] = "humidity";
-        // payload["val_tpl"] = "{{ value_json.hum | is_defined }}";
-        // payload["unit_of_meas"] = "%";
-        // device = payload.createNestedObject("device");
-        // device["name"] = g_deviceName;
-        // device["model"] = g_deviceModel;
-        // device["sw_version"] = g_swVersion;
-        // device["manufacturer"] = g_manufacturer;
-        // identifiers = device.createNestedArray("identifiers");
-        // identifiers.add(g_UniqueId);
-
-        // serializeJsonPretty(payload, Serial);
-        // Serial.println(" ");
-        // serializeJson(payload, strPayload);
-
-        // g_mqttPubSub.publish(discoveryTopic.c_str(), strPayload.c_str());
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Binary Door
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // payload.clear();
-        // device.clear();
-        // identifiers.clear();
-        // strPayload.clear();
-
-        // discoveryTopic = "homeassistant/binary_sensor/esp32iotsensor/" + g_deviceName + "_door" + "/config";
-        
-        // payload["name"] = g_deviceName + ".door";
-        // payload["uniq_id"] = g_UniqueId + "_door";
-        // payload["stat_t"] = g_mqttStatusTopic;
-        // payload["dev_cla"] = "door";
-        // payload["val_tpl"] = "{{ value_json.inputstatus | is_defined }}";
-        // device = payload.createNestedObject("device");
-        // device["name"] = g_deviceName;
-        // device["model"] = g_deviceModel;
-        // device["sw_version"] = g_swVersion;
-        // device["manufacturer"] = g_manufacturer;
-        // identifiers = device.createNestedArray("identifiers");
-        // identifiers.add(g_UniqueId);
-
-        // serializeJsonPretty(payload, Serial);
-        // Serial.println(" ");
-        // serializeJson(payload, strPayload);
-
-        // g_mqttPubSub.publish(discoveryTopic.c_str(), strPayload.c_str());
-
-    }
-}void MqttHomeAssistantDiscovery()
 {
     String discoveryTopic;
     String payload;
